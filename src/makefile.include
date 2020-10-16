@@ -1,0 +1,92 @@
+###########################################################################
+TAG = $(shell whoami)
+
+# Lua version
+LUAVER ?= 5.3
+
+# Base install directory
+PREFIX ?= /usr/local
+
+# Directory where to install Lua modules
+L_DIR = $(PREFIX)/share/lua/$(LUAVER)
+# Directory where to install Lua C modules
+C_DIR = $(PREFIX)/lib/lua/$(LUAVER)
+# Directory where to install C headers
+H_DIR = $(PREFIX)/include
+
+ifeq ($(D),1)
+DEBUG=1
+endif
+
+INCDIR = -I/usr/include -I/usr/include/lua$(LUAVER)
+LIBDIR = -L/usr/lib
+LIBS =
+###########################################################################
+default: build
+
+.SUFFIXES: .o .cpp
+
+%.o: %.c %.h
+	$(CXX) $(CFLAGS) $(DEBUG) -c $<
+
+%.o: %.cpp %.hpp
+	$(CXX) $(CXXFLAGS) $(DEBUG) -c $<
+
+# all: $(TARGET)
+#    $(LINK) -o $(TARGET) $(OBJS) $(LDSTATIC)
+
+$(TARGET): $(OBJS)
+
+where:
+	@echo "OS = "$(OS)
+	@echo "CC = "$(CC)
+	@echo "CXX = "$(CXX)
+	@echo "PREFIX = "$(PREFIX)
+	@echo "LUAVER = "$(LUAVER)
+	@echo $(L_DIR)
+	@echo $(C_DIR)
+	@echo $(H_DIR)
+	@echo "SRCS = "$(SRCS)
+	@echo "OBJS = "$(OBJS)
+
+###########################################################################
+LINK = $(CXX)
+
+SRCS ?= $(wildcard *.c)
+OBJS ?= $(SRCS:.c=.o)
+
+CPPSRCS ?= $(wildcard *.cpp)
+CPPOBJS ?= $(CPPSRCS:.cpp=.o)
+
+# C/C++ common options
+OPT += -O2
+OPT += -Wall -Wextra
+OPT += -DLUAVER=$(LUAVER)
+# OPT += -DUSE_GL=1 -DUSE_IMAGES=1
+
+OPT += -DLINUX
+OPT += -fpic
+
+ifdef DEBUG
+OPT += -DDEBUG
+OPT += -Wfatal-errors -Wpedantic
+OPT += -Wshadow -Wsign-compare -Wundef -Wwrite-strings
+OPT += -Wdisabled-optimization
+endif
+OPT +=  $(INCDIR)
+
+
+# C only options
+COPT = $(OPT)
+COPT += -std=gnu99
+ifdef DEBUG
+COPT += -Wdeclaration-after-statement
+COPT += -Wmissing-prototypes -Wstrict-prototypes -Wnested-externs
+COPT += -Wc++-compat -Wold-style-definition
+endif
+override CFLAGS = $(COPT)
+
+# C++ only options
+CXXOPT = $(OPT)
+override CXXFLAGS = $(CXXOPT)
+override LDFLAGS =
