@@ -1,5 +1,9 @@
 # cet
-Computational Experiment Toolbox is based on Lua.
+
+
+[Computational Experiment Toolbox](https://github.com/josh-feng/cet)
+is based on Lua.
+
 
 The initial gui will be based on FLTK (~IUP~),
 and [moonFLTK](https://github.com/stetre/moonfltk) is used.

@@ -12,22 +12,16 @@ typedef uint32_t DWORD;   // DWORD = unsigned 32 bit value
 typedef unsigned int UINT;
 typedef double REAL;
 
-typedef REAL COMPLEX[2];
-typedef REAL QUATERNION[4];
+// struct { REAL z[2]; } cetComplex; // quaternion/complex
+// struct { REAL q[4]; } cetQuaternion; // quaternion/complex
 
-/////////////////////////////  CET DATA STRUCTURE  /////////////////////////////
-// numerical data:
-//  complex number
-//  vector
-//  map
-//  abstract object
-
-// z = cet.qtn(0, 1) -- complex
-// q = cet.qtn(0, 1, 0, 0) -- quaternion
-// c = cet.vec() -- vector (column vector)
-// r = cet.row() -- vector (row vector)
-// m = cet.mat() -- matrix -- b = cet.spm() -- sparse matrix
-// a = cet.tsr() -- tensor
+////////////////////////////  CET DATA STRUCTURE  /////////////////////////////
+// z = cetcore.qtrn(0, 1) -- complex
+// h = cetcore.qtrn(0, 1, 0, 0) -- quaternion
+// c = cetcore.colvec() -- vector (column vector)
+// r = cetcore.rowvec() -- vector (row vector)
+// m = cetcore.matrix() -- matrix -- b = cet.spm() -- sparse matrix
+// t = cetcore.tensor() -- tensor
 
 #define MASKBNDL 0xF0 // bundle
 #define MASKDIMS 0x0F // dimensions
@@ -44,13 +38,15 @@ typedef REAL QUATERNION[4];
 // userdata: position/numerical index
 
 struct { // bundle
-    BYTE bndl; // 0-15 / dims (WORD?)
+    BYTE bndl; // 1-15:dimensionss 0:reserved
     void *ptr; // dimension array + data array (quaternion/complex)
-} cetdata;
+} cetData;
 
+extern const struct luaL_Reg cetCFunc[]; // complex
+extern const struct luaL_Reg cetHFunc[]; // quaternion
+extern const struct luaL_Reg cetTFunc[]; // tensor bundle
 
 //
-
 LUA_API int luaopen_cetcore (lua_State *);
 
 #endif
