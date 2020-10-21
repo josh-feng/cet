@@ -15,6 +15,9 @@ typedef double REAL;
 // struct { REAL z[2]; } cetComplex; // quaternion/complex
 // struct { REAL q[4]; } cetQuaternion; // quaternion/complex
 
+#define SIZE_C  (sizeof(REAL) * 2)
+#define SIZE_H  (sizeof(REAL) * 4)
+
 ////////////////////////////  CET DATA STRUCTURE  /////////////////////////////
 // z = cetcore.qtrn(0, 1) -- complex
 // h = cetcore.qtrn(0, 1, 0, 0) -- quaternion
@@ -38,9 +41,13 @@ typedef double REAL;
 // userdata: position/numerical index
 
 struct { // bundle
-    BYTE bndl; // 1-15:dimensionss 0:reserved
-    void *ptr; // dimension array + data array (quaternion/complex)
+  BYTE bndl; // 1-15:dimensionss 0:reserved
+  void *ptr; // dimension array + data array (quaternion/complex)
 } cetData;
+
+extern const char *CET_C;
+extern const char *CET_H;
+extern const char *CET_T;
 
 extern const struct luaL_Reg cetCFunc[]; // complex
 extern const struct luaL_Reg cetHFunc[]; // quaternion
@@ -50,4 +57,4 @@ extern const struct luaL_Reg cetTFunc[]; // tensor bundle
 LUA_API int luaopen_cetcore (lua_State *);
 
 #endif
-// vim: ts=4 sw=4 sts=4 et foldenable fdm=marker fmr={{{,}}} fdl=1
+// vim: ts=2 sw=2 sts=2 et foldenable fdm=marker fmr={{{,}}} fdl=1
